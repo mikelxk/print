@@ -1,5 +1,6 @@
 #pragma once
 #include <algorithm>
+#include <bitset>
 #include <iostream>
 #include <map>
 #include <numeric>
@@ -31,11 +32,27 @@ struct is_tuple : std::false_type {
 template <typename... T>
 struct is_tuple<std::tuple<T...>> : std::true_type {
 };
+template <typename>
+struct is_bitset : std::false_type {
+};
+template <size_t sz>
+struct is_tuple<std::bitset<sz>> : std::true_type {
+};
 //overload for pairs
 template <typename T1, typename T2>
-void print(const pair<T1, T2> p, string delim = ",")
+void print(const pair<T1, T2> &p, string delim = ",")
 {
     cout << '{' << p.first << ": " << p.second << '}' << delim;
+}
+//overload for bitset
+template <size_t sz>
+void print(const bitset<sz> &bs, string delim = ",")
+{
+    cout << "[";
+    for (size_t i = 0; i < sz; ++i) {
+        std::cout << (bs[i] ? "true" : "false") << delim;
+    }
+    cout << "\b]\n";
 }
 #if __cplusplus >= 201709L
 template <typename T>
@@ -50,21 +67,21 @@ concept ptr = is_pointer_v<T>;
 template <typename T>
 concept boolean = is_same_v<T, bool>;
 template <typename T>
-concept directPrintable = printable<T> and not ptr<T> and not boolean<T>;
+concept directPrintable = printable<T> and not ptr<T> and not boolean<T> and not is_bitset<T>();
 template <typename T>
-concept normalObj = not directPrintable<T> and not boolean<T> and not arr<T> and not ranges::input_range<T> and not ptr<T> and not is_tuple<T>();
+concept normalObj = not directPrintable<T> and not boolean<T> and not arr<T> and not ranges::input_range<T> and not ptr<T> and not is_tuple<T>() and not is_bitset<T>();
 template <directPrintable T>
-void print(const T prt, string delim = "")
+void print(const T &prt, string delim = "")
 {
     cout << prt << delim;
 };
 template <boolean B>
-void print(const B b, string delim = "")
+void print(const B &b, const string &delim = "")
 {
     cout << (b ? "true" : "false") << delim;
 }
 template <ranges::input_range rng>
-void print(const rng ir)
+void print(const rng &ir)
 {
 
     cout << '[';
@@ -83,7 +100,7 @@ void print(T (&arr)[sz])
     cout << "\b]\n";
 }
 template <normalObj obj>
-void print(obj o)
+void print(const obj &o)
 {
     cout << typeid(o).name();
 }

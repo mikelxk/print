@@ -46,6 +46,5 @@
             "preLaunchTask": "C/C++: clang++ build active file",
             "miDebuggerPath": "/usr/bin/lldb-mi"
         },
-        
     ]
 }
