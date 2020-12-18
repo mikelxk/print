@@ -61,17 +61,27 @@ concept ptr = is_pointer_v<T>;
 template <typename T>
 concept boolean = is_same_v<T, bool>;
 template <typename T>
-concept directPrintable = printable<T> and not boolean<T> and not is_bitset<T>() and not is_array_v<T>;
+concept directPrintable = printable<T> && !boolean<T> && !is_bitset<T>() && !is_array_v<T>;
 template <typename T>
-concept normalObj = not directPrintable<T> and not boolean<T> and not arr<T> and not ranges::input_range<T> and not ptr<T> and not is_tuple<T>() and not is_bitset<T>();
+concept normalObj = !(directPrintable<T> || boolean<T> || arr<T> || ranges::input_range<T> || ptr<T> || is_tuple<T>() || is_bitset<T>());
+template <size_t sz>
+void print(const bitset<sz> &bs, string delim = ",");
+template <directPrintable T>
+void print(const T &prt, string delim = "");
+template <boolean B>
+void print(const B &b, string delim = "");
+template <ranges::input_range rng>
+void print(const rng &ir);
+template <normalObj obj>
+void print(const obj &o);
 //overload for bitset
 template <boolean B>
-void print(const B &b, string delim = "")
+void print(const B &b,string delim)
 {
     cout << (b ? "true" : "false") << delim;
 }
 template <size_t sz>
-void print(const bitset<sz> &bs, string delim = ",")
+void print(const bitset<sz> &bs, string delim)
 {
     cout << "[";
     for (size_t i = 0; i < sz; ++i) {
@@ -80,7 +90,7 @@ void print(const bitset<sz> &bs, string delim = ",")
     cout << "\b]\n";
 }
 template <directPrintable T>
-void print(const T &prt, string delim = "")
+void print(const T &prt, string delim)
 {
     cout << prt << delim;
 };
