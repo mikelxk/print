@@ -2,16 +2,20 @@
 #include <algorithm>
 #include <bitset>
 #include <iostream>
-#include <map>
 #include <numeric>
 #include <ranges>
 #include <tuple>
 #include <typeinfo>
-#include <unordered_map>
-#include <vector>
+#include <utility>
 using namespace std;
 //overload for tuple
 //https://stackoverflow.com/questions/6245735/pretty-print-stdtuple
+template <typename TupType, size_t... I>
+void tuple_print(const TupType &_tup, std::index_sequence<I...>, string delim);
+template <typename... T>
+void print(const std::tuple<T...> &_tup, string delim = ",");
+template <typename T1, typename T2>
+void print(const pair<T1, T2> &p, string delim = ",");
 template <typename TupType, size_t... I>
 void tuple_print(const TupType &_tup, std::index_sequence<I...>, string delim)
 {
@@ -20,7 +24,7 @@ void tuple_print(const TupType &_tup, std::index_sequence<I...>, string delim)
     cout << "]";
 }
 template <typename... T>
-void print(const std::tuple<T...> &_tup, string delim = ",")
+void print(const std::tuple<T...> &_tup, string delim)
 {
     tuple_print(_tup, std::make_index_sequence<sizeof...(T)>(), delim);
 }
@@ -39,7 +43,7 @@ struct is_bitset<std::bitset<sz>> : std::true_type {
 };
 //overload for pairs
 template <typename T1, typename T2>
-void print(const pair<T1, T2> &p, string delim = ",")
+void print(const pair<T1, T2> &p, string delim)
 {
     cout << '{' << p.first << ": " << p.second << '}' << delim;
 }
