@@ -71,7 +71,7 @@ concept ptr = is_pointer_v<T>;
 template <typename T>
 concept boolean = is_same_v<T, bool>;
 template <typename T>
-concept directPrintable = printable<T> and not ptr<T> and not boolean<T> and not is_bitset<T>();
+concept directPrintable = printable<T> and not ptr<T> and not boolean<T> and not is_bitset<T>() and not is_array_v<T>;
 template <typename T>
 concept normalObj = not directPrintable<T> and not boolean<T> and not arr<T> and not ranges::input_range<T> and not ptr<T> and not is_tuple<T>() and not is_bitset<T>();
 template <directPrintable T>
@@ -79,26 +79,12 @@ void print(const T &prt, string delim = "")
 {
     cout << prt << delim;
 };
-// template <boolean B>
-// void print(const B &b, const string &delim = "")
-// {
-//     cout << (b ? "true" : "false") << delim;
-// }
 template <ranges::input_range rng>
 void print(const rng &ir)
 {
 
     cout << '[';
-    ranges::for_each(ir, [](auto ele) {
-        print(ele, ",");
-    });
-    cout << "\b]\n";
-}
-template <typename T, size_t sz>
-void print(T (&arr)[sz])
-{
-    cout << '[';
-    for_each(arr, arr + sz, [](auto ele) {
+    ranges::for_each(ir, [](const auto &ele) {
         print(ele, ",");
     });
     cout << "\b]\n";
