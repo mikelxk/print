@@ -19,10 +19,6 @@ void tuple_print(const TupType &_tup, std::index_sequence<I...>, string delim)
     (..., (cout << (I == 0 ? "" : delim) << std::get<I>(_tup)));
     cout << "]";
 }
-void print(const bool &b, const string &delim = "")
-{
-    cout << (b ? "true" : "false") << delim;
-}
 template <typename... T>
 void print(const std::tuple<T...> &_tup, string delim = ",")
 {
@@ -47,23 +43,13 @@ void print(const pair<T1, T2> &p, string delim = ",")
 {
     cout << '{' << p.first << ": " << p.second << '}' << delim;
 }
-//overload for bitset
-template <size_t sz>
-void print(const bitset<sz> &bs, string delim = ",")
-{
-    cout << "[";
-    for (size_t i = 0; i < sz; ++i) {
-        print(bs[i],",");
-    }
-    cout << "\b]\n";
-}
+
 #if __cplusplus >= 201709L
 template <typename T>
-concept printable = requires(const T& a)
+concept printable = requires(const T &a)
 {
     cout << a;
 };
-
 template <typename T>
 concept arr = is_array_v<T>;
 template <typename T>
@@ -71,9 +57,24 @@ concept ptr = is_pointer_v<T>;
 template <typename T>
 concept boolean = is_same_v<T, bool>;
 template <typename T>
-concept directPrintable = printable<T> and not ptr<T> and not boolean<T> and not is_bitset<T>() and not is_array_v<T>;
+concept directPrintable = printable<T> and not boolean<T> and not is_bitset<T>() and not is_array_v<T>;
 template <typename T>
 concept normalObj = not directPrintable<T> and not boolean<T> and not arr<T> and not ranges::input_range<T> and not ptr<T> and not is_tuple<T>() and not is_bitset<T>();
+//overload for bitset
+template <boolean B>
+void print(const B &b, string delim = "")
+{
+    cout << (b ? "true" : "false") << delim;
+}
+template <size_t sz>
+void print(const bitset<sz> &bs, string delim = ",")
+{
+    cout << "[";
+    for (size_t i = 0; i < sz; ++i) {
+        print(bs[i], ","s);
+    }
+    cout << "\b]\n";
+}
 template <directPrintable T>
 void print(const T &prt, string delim = "")
 {
@@ -85,7 +86,7 @@ void print(const rng &ir)
 
     cout << '[';
     ranges::for_each(ir, [](const auto &ele) {
-        print(ele, ",");
+        print(ele, ","s);
     });
     cout << "\b]\n";
 }

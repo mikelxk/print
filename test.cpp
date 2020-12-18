@@ -4,6 +4,7 @@ int main()
 {
     vector v1{1, 3, 2};
     vector v3{3, 8, 9, 10, 7, 8, 9};
+    vector vc{"c", "d"};
     vector<string> vs{"a", "b"};
     vector<bool> vb{true, false};
     array ai{1, 8, 9};
@@ -12,6 +13,7 @@ int main()
     map<int, int> mp{{1, 2}, {3, 4}};
     print(v1);
     print(v3);
+    print(vc);
     print(vs);
     print(vb);
     print(ai);
