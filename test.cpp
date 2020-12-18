@@ -1,5 +1,4 @@
 #include "print.hpp"
-#include <bitset>
 using namespace std;
 int main()
 {

@@ -19,7 +19,10 @@ void tuple_print(const TupType &_tup, std::index_sequence<I...>, string delim)
     (..., (cout << (I == 0 ? "" : delim) << std::get<I>(_tup)));
     cout << "]";
 }
-
+void print(const bool &b, const string &delim = "")
+{
+    cout << (b ? "true" : "false") << delim;
+}
 template <typename... T>
 void print(const std::tuple<T...> &_tup, string delim = ",")
 {
@@ -36,7 +39,7 @@ template <typename>
 struct is_bitset : std::false_type {
 };
 template <size_t sz>
-struct is_tuple<std::bitset<sz>> : std::true_type {
+struct is_bitset<std::bitset<sz>> : std::true_type {
 };
 //overload for pairs
 template <typename T1, typename T2>
@@ -50,16 +53,17 @@ void print(const bitset<sz> &bs, string delim = ",")
 {
     cout << "[";
     for (size_t i = 0; i < sz; ++i) {
-        std::cout << (bs[i] ? "true" : "false") << delim;
+        print(bs[i],",");
     }
     cout << "\b]\n";
 }
 #if __cplusplus >= 201709L
 template <typename T>
-concept printable = requires(T a)
+concept printable = requires(const T& a)
 {
     cout << a;
 };
+
 template <typename T>
 concept arr = is_array_v<T>;
 template <typename T>
@@ -75,11 +79,11 @@ void print(const T &prt, string delim = "")
 {
     cout << prt << delim;
 };
-template <boolean B>
-void print(const B &b, const string &delim = "")
-{
-    cout << (b ? "true" : "false") << delim;
-}
+// template <boolean B>
+// void print(const B &b, const string &delim = "")
+// {
+//     cout << (b ? "true" : "false") << delim;
+// }
 template <ranges::input_range rng>
 void print(const rng &ir)
 {
